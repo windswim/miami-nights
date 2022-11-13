@@ -427,7 +427,7 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 	
 	
 	function L_28_:CreateSelection(L_74_arg0, L_75_arg1)
-		WindowData.Created += 1
+		L_28_.Created += 1
 		local L_76_ = createObject("TextButton", {
 			Name = "SelectionButton",
 			Parent = L_41_,
