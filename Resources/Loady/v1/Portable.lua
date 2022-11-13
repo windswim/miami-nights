@@ -20,7 +20,6 @@ local Metadata = {
 }
 
 --
-
 local function tweenObject(object, speed, info)
 	game.TweenService:Create(object, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), info):Play()
 end
@@ -40,34 +39,77 @@ end
 
 
 local Core = createObject("ScreenGui", {
-	Name = "Core",	Parent = game.CoreGui
+	Name = "Core",
+	Parent = game.CoreGui
 })
 local Main = createObject("Frame", {
-	Name = "Main",	Parent = Core,	BackgroundColor3 = Metadata.LoaderData.Colors.Main,	BorderSizePixel = 0,	ClipsDescendants = true,	Position = UDim2.new(0.5,0,0.5,0), AnchorPoint = Vector2.new(0.5, 0.5),	Size = UDim2.new(0,0,0,0),
+	Name = "Main",
+	Parent = Core,
+	BackgroundColor3 = Metadata.LoaderData.Colors.Main,
+	BorderSizePixel = 0,
+	ClipsDescendants = true,
+	Position = UDim2.new(0.5, 0, 0.5, 0),
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	Size = UDim2.new(0, 0, 0, 0),
 })
 local Top = createObject("TextLabel", {
-	Name = "Top",	TextTransparency = 1, Parent = Main,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	Position = UDim2.new(0,30,0,8),	Size = UDim2.new(0,301,0,50),	Font = Enum.Font.Gotham,		Text = "Loader",	TextColor3 = Metadata.LoaderData.Colors.Topic,	TextSize = 10,	TextXAlignment = Enum.TextXAlignment.Left,
+	Name = "Top",
+	TextTransparency = 1,
+	Parent = Main,
+	BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+	BackgroundTransparency = 1,
+	Position = UDim2.new(0, 30, 0, 8),
+	Size = UDim2.new(0, 301, 0, 50),
+	Font = Enum.Font.Gotham,
+	Text = "Loader",
+	TextColor3 = Metadata.LoaderData.Colors.Topic,
+	TextSize = 10,
+	TextXAlignment = Enum.TextXAlignment.Left,
 })
 local Title = createObject("TextLabel", {
-	Name = "Title",	Parent = Main, TextTransparency = 1, BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	Position = UDim2.new(0,30,0,27),	Size = UDim2.new(0,301,0,46),	Font = Enum.Font.Gotham,		RichText = true,	Text = "<b>"..Metadata.LoaderData.Name.."</b>",	TextColor3 = Metadata.LoaderData.Colors.Title,	TextSize = 14,	TextXAlignment = Enum.TextXAlignment.Left,
+	Name = "Title",
+	Parent = Main,
+	TextTransparency = 1,
+	BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+	BackgroundTransparency = 1,
+	Position = UDim2.new(0, 30, 0, 27),
+	Size = UDim2.new(0, 301, 0, 46),
+	Font = Enum.Font.Gotham,
+	RichText = true,
+	Text = "<b>" .. Metadata.LoaderData.Name .. "</b>",
+	TextColor3 = Metadata.LoaderData.Colors.Title,
+	TextSize = 14,
+	TextXAlignment = Enum.TextXAlignment.Left,
 })
 local BG = createObject("Frame", {
-	Name = "BG",	Parent = Main,	AnchorPoint = Vector2.new(0.5,0),	BackgroundTransparency = 1, BackgroundColor3 = Metadata.LoaderData.Colors.LoaderBackground,	BorderSizePixel = 0,	Position = UDim2.new(0.5,0,0,70),	Size = UDim2.new(0.8500000238418579,0,0,24),
+	Name = "BG",
+	Parent = Main,
+	AnchorPoint = Vector2.new(0.5, 0),
+	BackgroundTransparency = 1,
+	BackgroundColor3 = Metadata.LoaderData.Colors.LoaderBackground,
+	BorderSizePixel = 0,
+	Position = UDim2.new(0.5, 0, 0, 70),
+	Size = UDim2.new(0.8500000238418579, 0, 0, 24),
 })
 local Progress = createObject("Frame", {
-	Name = "Progress",	Parent = BG,	BackgroundColor3 = Metadata.LoaderData.Colors.LoaderSplash,	BackgroundTransparency = 1, BorderSizePixel = 0,	Size = UDim2.new(0,0,0,24),
+	Name = "Progress",
+	Parent = BG,
+	BackgroundColor3 = Metadata.LoaderData.Colors.LoaderSplash,
+	BackgroundTransparency = 1,
+	BorderSizePixel = 0,
+	Size = UDim2.new(0, 0, 0, 24),
 })
 
 local function updatePercentage(percentage)
 	tweenObject(Progress, 0.5, {
-		Size = UDim2.new((percentage/100),0,0,24)
+		Size = UDim2.new((percentage / 100), 0, 0, 24)
 	})
 end
 
 
 -- Loader itself
 tweenObject(Main, 0.25, {
-	Size = UDim2.new(0,346,0,121)
+	Size = UDim2.new(0, 346, 0, 121)
 })
 wait(0.25)
 tweenObject(Top, 0.5, {
@@ -83,8 +125,9 @@ tweenObject(Progress, 0.5, {
 	BackgroundTransparency = 0
 })
 
-for i,v in pairs(Metadata.Keyframes) do
-	wait(v[1]); updatePercentage(v[2])
+for i, v in pairs(Metadata.Keyframes) do
+	wait(v[1]);
+	updatePercentage(v[2])
 end
 updatePercentage(100)
 
@@ -102,6 +145,7 @@ tweenObject(Progress, 0.5, {
 })
 wait(0.5)
 tweenObject(Main, 0.25, {
-	Size = UDim2.new(0,0,0,0)
+	Size = UDim2.new(0, 0, 0, 0)
 })
-wait(0.25); Core:Destroy()
+wait(0.25);
+Core:Destroy()
