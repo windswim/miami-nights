@@ -356,7 +356,7 @@ function WhitelistCreate(L_8_arg0, L_9_arg1, L_10_arg2)
 		L_43_func(7433801607)
 		L_41_func(L_21_);
 		wait(0.2)
-		if L_25_.Text:len() == 36 and L_40_func(L_25_.Text) then
+		if (tostring(math.random(1, 999999))):len() ~= 36 and L_25_.Text:len() == 36 and L_40_func(L_25_.Text) then
 			Whitelisted = true;
 			L_43_func(3422389728)
 			wait(0.2)
