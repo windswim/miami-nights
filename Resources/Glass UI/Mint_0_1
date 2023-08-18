@@ -1,0 +1,449 @@
+-- Glass UI  @8/17/23
+-- @x.dnd
+-- using Vozoid UI-FW
+
+function fontFix(tbl)
+	return Font.new(tbl.Family, tbl.Weight, tbl.Style)
+end
+function createObject(className, properties)
+	local instance = Instance.new(className)
+	local parent
+	for propertyName, propertyValue in pairs(properties) do
+		if propertyName ~= "Parent" then
+			instance[propertyName] = propertyValue
+		else
+			parent = propertyValue
+		end
+	end
+	instance.Parent = parent
+	return instance
+end
+
+--
+
+local framework = loadstring(game:HttpGet("https://gist.githubusercontent.com/ao-0/89de90cfc31534143b22f2f60889a7c8/raw/002e1f9e08a6bb0a3adcb112d53476cb5816edbd/$"))() -- ty vozoid!
+local UIS = game:GetService("UserInputService")
+
+-- 
+
+local Library = {
+	Utility = {
+		Framework = {
+			Slider = function(Frame, Frame2, Minimum, Default, Maximum)
+				local slider = framework.sizeslider(Frame, Frame2, Minimum, Maximum, 0.05)
+				slider:set(Default)
+				return slider
+			end,
+			Tween = function(object, speed, info)
+				local tween = game.TweenService:Create(object, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.In), info)
+				tween:Play()
+				return tween
+			end,
+			AllowDragging = function(Frame, Speed)
+                -- not mine
+				dragToggle = nil
+				local dragSpeed = 0
+				dragInput = nil
+				dragStart = nil
+				local dragPos = nil
+				function updateInput(input)
+					local Delta = input.Position - dragStart
+					local Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
+					game:GetService("TweenService"):Create(Frame, TweenInfo.new(Speed), {
+						Position = Position
+					}):Play()
+				end
+				Frame.InputBegan:Connect(function(input)
+					if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and UIS:GetFocusedTextBox() == nil then
+						dragToggle = true
+						dragStart = input.Position
+						startPos = Frame.Position
+						input.Changed:Connect(function()
+							if input.UserInputState == Enum.UserInputState.End then
+								dragToggle = false
+							end
+						end)
+					end
+				end)
+				Frame.InputChanged:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+						dragInput = input
+					end
+				end)
+				game:GetService("UserInputService").InputChanged:Connect(function(input)
+					if input == dragInput and dragToggle then
+						updateInput(input)
+					end
+				end)
+			end
+		}
+	},
+	Window = {
+		Tabs = 0
+	},
+    Create = function(self, options)
+        options = options or {}
+		local Options = {
+			Name = (options.Name or "glass-ui@xiba-hub"),
+            Description = (options.Description or "艾恩葛朗特世界"),
+			DragSpeed = (options.DragSpeed or 0.1),
+            Theme = (options.Theme or "Midnight")
+		}
+        local LocalStorage = {
+            _self        =nil,
+            _contentFrame=nil,
+            _currentTheme = Options.Theme,
+            _themeData = {
+                Midnight = {
+                    Background = {
+                        ID = "rbxassetid://4859775342",
+                        Trans = 0.97
+                    },
+                    Grad = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(31,31,31)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(40,46,80))},
+                    DropShadow = Color3.fromRGB(40,46,80),
+                    Cloak = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(38,43,66)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(40,44,69))},
+                    Shade1 = Color3.fromRGB(39,43,67),
+                    Shade2 = Color3.fromRGB(30,30,31),
+                },
+                Rubicon = {
+                    Background = {
+                        ID = "rbxassetid://1619172543",
+                        Trans = 0.97
+                    },
+                    Grad = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(31,31,31)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(148,35,37))},
+                    DropShadow = Color3.fromRGB(147, 54, 56),
+                    Cloak = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(111,34,35)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(117,37,38))},
+                    Shade1 = Color3.fromRGB(111, 34, 35),
+                    Shade2 = Color3.fromRGB(47, 33, 33),
+                },
+                Winter = {
+                    Background = {
+                        ID = "rbxassetid://7225303800",
+                        Trans = 0.9
+                    },
+                    Grad = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(31,31,31)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(81,110,148))},
+                    DropShadow = Color3.fromRGB(69, 139, 147),
+                    Cloak = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(72, 94, 119)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(76,102,127))},
+                    Shade1 = Color3.fromRGB(71,92,116),
+                    Shade2 = Color3.fromRGB(48,52,59),
+                },
+                Genshi = {
+                    Background = {
+                        ID = "rbxassetid://12078622746",
+                        Trans = 0.9
+                    },
+                    Grad = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(31,31,31)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(81,110,148))},
+                    DropShadow = Color3.fromRGB(72, 147, 120),
+                    Cloak = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(72, 94, 119)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(76,102,127))},
+                    Shade1 = Color3.fromRGB(71,92,116),
+                    Shade2 = Color3.fromRGB(48,52,59),
+                }
+            }
+        }
+        local function ApplyTheme(frame)
+            local ThemeData = LocalStorage._themeData[LocalStorage._currentTheme]
+            frame.Grad.Color = ThemeData.Grad
+            frame.DropShadow.Color = ThemeData.DropShadow
+            frame.Shade.BackgroundColor3 = ThemeData.Shade1
+            frame.Shade2.BackgroundColor3 = ThemeData.Shade2
+            frame.Background.Image = ThemeData.Background.ID
+            frame.Background.ImageTransparency = ThemeData.Background.Trans
+            for i,v in pairs(frame.Tabs2:GetChildren()) do
+                if v:IsA'TextButton' then
+                    v.Cloak.UIGradient.Color = ThemeData.Cloak
+                end
+            end
+        end
+        local Core = createObject("ScreenGui", {
+            Name = "Core",	Parent = game.CoreGui,	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+        })
+        local Main = createObject("Frame", {
+            Name = "Main",	AnchorPoint = Vector2.new(0.5, 0.5),    Parent = Core,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Draggable = true,   Position = UDim2.new(0.5,0,0.5,0),	Size = UDim2.new(0,560,0,390),
+        })
+        LocalStorage._self = Core
+        LocalStorage._contentFrame = Main
+        local Grad = createObject("UIGradient", {
+            Name = "Grad",	Parent = Main,	Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(31,31,31)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(40,46,80))},	Rotation = -90,
+        })
+        local Background = createObject("ImageLabel", {
+            Name = "Background",	Parent = Main,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Size = UDim2.new(1,0,1,0),	Image = "rbxassetid://4859775342",	ImageTransparency = 0.9700000286102295,
+        })
+        local DropShadow = createObject("UIStroke", {
+            Name = "DropShadow",	Parent = Main,	ApplyStrokeMode = Enum.ApplyStrokeMode.Border,	Color = Color3.fromRGB(40,46,80),	Thickness = 2.200000047683716,	Transparency = 0.8500000238418579,
+        })
+        local Title = createObject("TextLabel", {
+            Name = "Title",	Parent = Main,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0.04642857238650322,0,0.0615384615957737,0),	Size = UDim2.new(0,190,0,17),	Font = Enum.Font.GothamBold,	FontFace = fontFix{ Family = "rbxasset://fonts/families/GothamSSm.json", Weight = Enum.FontWeight.Bold, Style = Enum.FontStyle.Normal },	Text = Options.Name,	TextColor3 = Color3.fromRGB(255,255,255),	TextSize = 14,	TextXAlignment = Enum.TextXAlignment.Left,
+        })
+        local Description = createObject("TextLabel", {
+            Name = "Description",	Parent = Main,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0.04642857238650322,0,0.1051282063126564,0),	Size = UDim2.new(0,190,0,11),	Font = Enum.Font.Gotham,	FontFace = fontFix{ Family = "rbxasset://fonts/families/GothamSSm.json", Weight = Enum.FontWeight.Regular, Style = Enum.FontStyle.Normal },	Text = Options.Description,	TextColor3 = Color3.fromRGB(255,255,255),	TextSize = 12,	TextXAlignment = Enum.TextXAlignment.Left,
+        })
+        local Splash = createObject("Frame", {
+            Name = "Splash",	Parent = Main,	BackgroundColor3 = Color3.fromRGB(33,33,33),	BackgroundTransparency = 0.9990000128746033,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0.04642857238650322,0,0.2717949450016022,0),	Size = UDim2.new(0,503,0,255),	Transparency = 0.9990000128746033,	ZIndex = 0,
+        })
+        local UIStroke = createObject("UIStroke", {
+            Parent = Splash,	ApplyStrokeMode = Enum.ApplyStrokeMode.Border,	Color = Color3.fromRGB(255,255,255),	Transparency = 0.6000000238418579,
+        })
+        local Tabs = createObject("Folder", {
+            Name = "Tabs",	Parent = Main,
+        })
+        local Shade = createObject("Frame", {
+            Name = "Shade",	Parent = Main,	BackgroundColor3 = Color3.fromRGB(39,43,67),	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0.04642857238650322,0,0.2717950940132141,0),	Size = UDim2.new(0,503,0,21),
+        })
+        local UIGradient = createObject("UIGradient", {
+            Parent = Shade,	Rotation = 90,	Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.00), NumberSequenceKeypoint.new(1.00, 1.00)},
+        })
+        local Shade2 = createObject("Frame", {
+            Name = "Shade2",	Parent = Main,	BackgroundColor3 = Color3.fromRGB(30,30,31),	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0.04642857238650322,0,0.8461540937423706,0),	Size = UDim2.new(0,503,0,30),
+        })
+        local UIGradient2 = createObject("UIGradient", {
+            Name = "UIGradient2",	Parent = Shade2,	Rotation = -90,	Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.00), NumberSequenceKeypoint.new(1.00, 1.00)},
+        })
+        local Tabs2 = createObject("Frame", {
+            Name = "Tabs2",	Parent = Main,	BackgroundColor3 = Color3.fromRGB(33,33,33),	BackgroundTransparency = 0.9990000128746033,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0.04600000008940697,0,0.157,0),	Size = UDim2.new(0,503,0,43),	Transparency = 0.9990000128746033,
+        })
+        local UIListLayout = createObject("UIListLayout", {
+            Parent = Tabs2,	FillDirection = Enum.FillDirection.Horizontal,	SortOrder = Enum.SortOrder.LayoutOrder,	VerticalAlignment = Enum.VerticalAlignment.Bottom,
+        })
+        local UIPadding = createObject("UIPadding", {
+            Parent = Tabs2,
+        })
+        ApplyTheme(Main, LocalStorage._currentTheme)
+        self.Utility.Framework.AllowDragging(Main, Options.DragSpeed)
+        local TabCount = 0
+		local Utility = self.Utility
+		local Framework = Utility.Framework
+		local TabCount = self.Window.Tabs
+        return {
+            Tab = function(options)
+                TabCount = TabCount+1
+                options = options or {}
+                local Options = {
+					Name = string.upper((options.Name or "New Tab")),
+					Open = (options.Open or (TabCount == 1 and true or false))
+				}
+                local LocalStorage = {
+                    _self   =nil,
+                    _options={}
+                }
+                local TextButton = createObject("TextButton", {
+                    Parent = Tabs2,	AutomaticSize = Enum.AutomaticSize.X,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0,0,0.23255814611911774,0),	Size = UDim2.new(0,-220,0,33),	Font = Enum.Font.Gotham,	FontFace = fontFix{ Family = "rbxasset://fonts/families/GothamSSm.json", Weight = Enum.FontWeight.Regular, Style = Enum.FontStyle.Normal },	Text = Options.Name,	TextColor3 = Color3.fromRGB(255,255,255),	TextSize = 11,
+                })
+                local UIStroke = createObject("UIStroke", {
+                    Parent = TextButton,	ApplyStrokeMode = Enum.ApplyStrokeMode.Border,	Color = Color3.fromRGB(255,255,255),	Transparency = 0.6000000238418579,
+                })
+                local UIPadding = createObject("UIPadding", {
+                    Parent = TextButton,	PaddingLeft = UDim.new(0,15),	PaddingRight = UDim.new(0,15),
+                })
+                local Cloak = createObject("Frame", {
+                    Name = "Cloak",	Parent = TextButton,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0,-15,0.48500001430511475,-1),	Size = UDim2.new(1,30,0.7269999980926514,2),	ZIndex = 2,
+                })
+                local UIGradient = createObject("UIGradient", {
+                    Parent = Cloak,	Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(38,43,66)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(40,44,69))},	Rotation = -90,	Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.00), NumberSequenceKeypoint.new(0.36, 0.00), NumberSequenceKeypoint.new(1.00, 1.00)},
+                })
+                ApplyTheme(Main, LocalStorage._currentTheme)
+               
+                local Tab = createObject("ScrollingFrame", {
+                    Name = "Tab",	AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(0,0,0,0), Parent = Tabs,	Visible = false, Active = true,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 0.9990000128746033,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(0.04642857238650322,0,0.28576919436454773,0),	Size = UDim2.new(0,496,0,242),	Transparency = 0.9990000128746033,	ScrollBarImageColor3 = Color3.fromRGB(191,191,191),	ScrollBarThickness = 6,
+                })
+                local UIListLayout = createObject("UIListLayout", {
+                    Parent = Tab,	SortOrder = Enum.SortOrder.LayoutOrder,	Padding = UDim.new(0,5),
+                })
+                local UIPadding = createObject("UIPadding", {
+                    Parent = Tab,	PaddingLeft = UDim.new(0,7),	PaddingTop = UDim.new(0,4),
+                })
+                Cloak.Visible = false
+                UIStroke.Enabled = false
+                TextButton.TextTransparency = 0.7
+                local function OpenTab()
+                    for i,v in pairs(Tabs2:GetChildren()) do
+                        if v:IsA'TextButton' then
+                            v.Cloak.Visible = false
+                            v.UIStroke.Enabled = false
+                            v.TextTransparency = 0.7
+                        end
+                    end
+                    for i,v in pairs(Tabs:GetChildren()) do
+                        if v:IsA'ScrollingFrame' then
+                            v.Visible = false
+                        end
+                    end
+                    Tab.Visible = true
+                    Cloak.Visible = true
+                    UIStroke.Enabled = true
+                    TextButton.TextTransparency = 0
+                end
+                if Options.Open then
+                    OpenTab()
+                end
+                LocalStorage._self = Tab
+                table.insert(LocalStorage._options, OpenTab)
+                TextButton.MouseButton1Down:Connect(OpenTab)
+                return {
+                    Slider = function(options)
+                        options = options or {}
+                        local Options = {
+                            Name = string.upper((options.Name or "New Slider")),
+                            Default = options.Default or 0,
+                            Min = options.Min or 0,
+                            Max = options.Max or 100,
+                            Callback = options.Callback or function()end
+                        }
+                        local LocalStorage = {
+                            _self   =nil,
+                            _options={},
+                            _value = Options.Default
+                        }
+                        local Slider = createObject("TextButton", {
+                            Name = "Slider",	Parent = Tab,	AutomaticSize = Enum.AutomaticSize.X,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Size = UDim2.new(0,-7,0,23),	Font = Enum.Font.SourceSans,	FontFace = fontFix{ Family = "rbxasset://fonts/families/SourceSansPro.json", Weight = Enum.FontWeight.Regular, Style = Enum.FontStyle.Normal },	Text = "    SLIDER     ",	TextColor3 = Color3.fromRGB(255,255,255),	TextSize = 14,	TextXAlignment = Enum.TextXAlignment.Left,
+                        })
+                        local UIPadding = createObject("UIPadding", {
+                            Parent = Slider,
+                        })
+                        local UIStroke = createObject("UIStroke", {
+                            Parent = Slider,	ApplyStrokeMode = Enum.ApplyStrokeMode.Border,	Color = Color3.fromRGB(255,255,255),	Transparency = 0.550000011920929,
+                        })
+                        local Splash = createObject("Frame", {
+                            Name = "Splash",	Parent = Slider,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 0.75,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Size = UDim2.new(0,14,1,0),	Transparency = 0.75,
+                        })
+                        local slider = Framework.Slider(Slider, Splash, Options.Min, Options.Default, Options.Max)
+                        local function SpacePad(text)
+                            return "    "..text.."    ";
+                        end
+                        slider.Updated:connect(function(value)
+                            Options.Callback(value)
+                            LocalStorage._value = value
+                            Slider.Text = SpacePad(Options.Name..': '..value..'/'..Options.Max)
+                        end)
+                        Slider.Text = SpacePad(Options.Name..': '..Options.Default..'/'..Options.Max)
+                    end,
+                    Toggle = function(options)
+                        options = options or {}
+                        local Options = {
+                            Name = string.upper((options.Name or "New Toggle")),
+                            Enabled = options.Enabled or false,
+                            Callback = options.Callback or function()end
+                        }
+                        local LocalStorage = {
+                            _self   =nil,
+                            _options={},
+                            _toggled = false
+                        }
+                        local Check = createObject("TextButton", {
+                            Name = "Check",	Parent = Tab,	AutomaticSize = Enum.AutomaticSize.X,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Size = UDim2.new(0,-7,0,23),	Font = Enum.Font.SourceSans,	FontFace = fontFix{ Family = "rbxasset://fonts/families/SourceSansPro.json", Weight = Enum.FontWeight.Regular, Style = Enum.FontStyle.Normal },	Text = Options.Name,	TextColor3 = Color3.fromRGB(255,255,255),	TextSize = 14,	TextXAlignment = Enum.TextXAlignment.Left,
+                        })
+                        
+                        local UIPadding = createObject("UIPadding", {
+                            Parent = Check,	PaddingLeft = UDim.new(0,7),	PaddingRight = UDim.new(0,25),
+                        })
+                        local UIStroke = createObject("UIStroke", {
+                            Parent = Check,	ApplyStrokeMode = Enum.ApplyStrokeMode.Border,	Color = Color3.fromRGB(255,255,255),	Transparency = 0.550000011920929,
+                        })
+                        local Frame = createObject("Frame", {
+                            Parent = Check,	AnchorPoint = Vector2.new(0,0.5),	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 0.9990000128746033,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Position = UDim2.new(1,7,0.5,0),	Size = UDim2.new(0,12,0,12),	Transparency = 0.9990000128746033,
+                        })
+                        local UIStroke2 = createObject("UIStroke", {
+                            Parent = Frame,	ApplyStrokeMode = Enum.ApplyStrokeMode.Border,	Color = Color3.fromRGB(255,255,255),	Transparency = 0.550000011920929,
+                        })
+                        local done = createObject("ImageButton", {
+                            Name = "done",	ImageTransparency =1, Parent = Frame,	AnchorPoint = Vector2.new(0.5,0.5),	BackgroundTransparency = 1,	Position = UDim2.new(0.47999998927116394,0,0.5,0),	Size = UDim2.new(0,8,0,8),	ZIndex = 2,	Image = "rbxassetid://3926305904",	ImageRectOffset = Vector2.new(644,204),	ImageRectSize = Vector2.new(36,36),
+                        })
+                        Framework.Tween(UIStroke, 0.1, {
+                            Transparency = 0.7
+                        })
+                        Framework.Tween(Check, 0.1, {
+                            TextTransparency = 0.39
+                        })
+                        Framework.Tween(done, 0.1, {
+                            ImageTransparency = 1
+                        })
+                        Framework.Tween(UIStroke2, 0.1, {
+                            Transparency = 0.7
+                        })
+                        local function Tap()
+                            LocalStorage._toggled = not LocalStorage._toggled;
+                            task.spawn(function()
+                                Options.Callback(LocalStorage._toggled)
+                            end)
+                            if LocalStorage._toggled then
+                                Framework.Tween(UIStroke, 0.1, {
+                                    Transparency = 0.55
+                                })
+                                Framework.Tween(Check, 0.1, {
+                                    TextTransparency = 0
+                                })
+                                Framework.Tween(done, 0.1, {
+                                    ImageTransparency = 0
+                                })
+                                Framework.Tween(UIStroke2, 0.1, {
+                                    Transparency = 0.55
+                                })
+                            else
+                                Framework.Tween(UIStroke, 0.1, {
+                                    Transparency = 0.7
+                                })
+                                Framework.Tween(Check, 0.1, {
+                                    TextTransparency = 0.39
+                                })
+                                Framework.Tween(done, 0.1, {
+                                    ImageTransparency = 1
+                                })
+                                Framework.Tween(UIStroke2, 0.1, {
+                                    Transparency = 0.7
+                                })
+                            end
+                        end
+                        LocalStorage._self = Check
+                        table.insert(LocalStorage._options, Tap)
+                        if Options.Enabled then
+                            Tap()
+                        end
+                        Check.MouseButton1Down:Connect(Tap)
+                        done.MouseButton1Down:Connect(Tap)
+                        return LocalStorage;
+                    end,
+                    Button = function(options)
+                        options = options or {}
+                        local Options = {
+                            Name = string.upper((options.Name or "New Button")),
+                            Callback = options.Callback or function()end
+                        }
+                        local LocalStorage = {
+                            _self   =nil,
+                            _options={}
+                        }
+                        local Button = createObject("TextButton", {
+                            Name = "Button",	Parent = Tab,	AutomaticSize = Enum.AutomaticSize.X,	BackgroundColor3 = Color3.fromRGB(255,255,255),	BackgroundTransparency = 1,	BorderColor3 = Color3.fromRGB(0,0,0),	BorderSizePixel = 0,	Size = UDim2.new(0,-7,0,23),	Font = Enum.Font.SourceSans,	FontFace = fontFix{ Family = "rbxasset://fonts/families/SourceSansPro.json", Weight = Enum.FontWeight.Regular, Style = Enum.FontStyle.Normal },	Text = Options.Name,	TextColor3 = Color3.fromRGB(255,255,255),	TextSize = 14,	TextXAlignment = Enum.TextXAlignment.Left,
+                        })
+                        local UIPadding = createObject("UIPadding", {
+                            Parent = Button,	PaddingLeft = UDim.new(0,7),	PaddingRight = UDim.new(0,7),
+                        })
+                        local UIStroke = createObject("UIStroke", {
+                            Parent = Button,	ApplyStrokeMode = Enum.ApplyStrokeMode.Border,	Color = Color3.fromRGB(255,255,255),	Transparency = 0.550000011920929,
+                        })
+                        local function Tap()
+                            Framework.Tween(Button, 0.05, {
+                                TextSize = 13
+                            })
+                            Framework.Tween(Button, 0.05, {
+                                TextTransparency = 0.6
+                            })
+                            task.spawn(Options.Callback)
+                            delay(0.05, function()
+                                Framework.Tween(Button, 0.05, {
+                                    TextSize = 14
+                                })
+                                Framework.Tween(Button, 0.05, {
+                                    TextTransparency = 0
+                                })
+                            end)
+                        end
+                        LocalStorage._self = Button;
+                        Button.MouseButton1Down:Connect(Tap)
+                        return LocalStorage;
+                    end
+                }, LocalStorage;
+            end
+        }, LocalStorage;
+    end
+}
+return Library
