@@ -1,9 +1,9 @@
 -- Example for glass ui version mint 0_1
 -- @8/16/23
 
-local Library = loadstring(game:HttpGet'https://raw.githubusercontent.com/ao-0/miami-nights/main/Resources/Glass%20UI/Mint_0_1')()
+local Library = loadstring(game:HttpGet'https://raw.githubusercontent.com/ao-0/miami-nights/main/Resources/Glass%20UI/Mint_0_1')("Glass UI | Version Mint 0_1");
 local Window, LocalStore = Library:Create({
-	Name = "glass-ui@example",
+    Name = "glass-ui@example",
     Description = "艾恩特葛朗特世界",
     Theme = "Midnight" -- Midnight, Rubicon, Genshi, Winter
 })
