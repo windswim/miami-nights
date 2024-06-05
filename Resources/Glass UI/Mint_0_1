@@ -21,7 +21,7 @@ end
 
 --
 
-local framework = loadstring(game:HttpGet("https://gist.githubusercontent.com/ao-0/89de90cfc31534143b22f2f60889a7c8/raw/002e1f9e08a6bb0a3adcb112d53476cb5816edbd/$"))() -- ty vozoid!
+local framework = loadstring(game:HttpGet("https://gist.githubusercontent.com/windswim/89de90cfc31534143b22f2f60889a7c8/raw/002e1f9e08a6bb0a3adcb112d53476cb5816edbd/$"))() -- ty vozoid!
 local UIS = game:GetService("UserInputService")
 
 -- 
